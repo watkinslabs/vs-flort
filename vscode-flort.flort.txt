@@ -1,0 +1,1395 @@
+## Florted: 2025-06-03 08:13:25
+## Directory Tree
+vscode-flort/
+├── src/
+│   ├── command.js
+│   ├── flort.js
+│   └── flort_config_provider.js
+├── package-lock.json
+├── package.json
+└── settings.json
+
+## File Data
+--- File: package-lock.json
+--- Characters: 1,027
+--- Token Count: 293
+{
+  "name": "wl-flort",
+  "version": "0.0.1",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "wl-flort",
+      "version": "0.0.1",
+      "dependencies": {
+        "@types/node": "^14.0.0"
+      },
+      "devDependencies": {
+        "@types/node": "^14.0.0",
+        "@types/vscode": "^1.7.0"
+      },
+      "engines": {
+        "vscode": "^1.7.0"
+      }
+    },
+    "node_modules/@types/node": {
+      "version": "14.18.63",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-14.18.63.tgz",
+      "integrity": "sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@types/vscode": {
+      "version": "1.100.0",
+      "resolved": "https://registry.npmjs.org/@types/vscode/-/vscode-1.100.0.tgz",
+      "integrity": "sha512-4uNyvzHoraXEeCamR3+fzcBlh7Afs4Ifjs4epINyUX/jvdk0uzLnwiDY35UKDKnkCHP5Nu3dljl2H8lR6s+rQw==",
+      "dev": true,
+      "license": "MIT"
+    }
+  }
+}
+
+--- File: package.json
+--- Characters: 8,969
+--- Token Count: 2,514
+{
+  "name": "wl-flort",
+  "displayName": "VS-Flort",
+  "description": "File concatenation tool integration for VSCode - concatenate multiple files into a single output",
+  "version": "0.0.30",
+  "publisher": "WatkinsLabs",
+  "author": {
+    "name": "Chris Watkins",
+    "email": "chris@watkinslabs.com",
+    "url": "https://watkinslabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/watkinslabs/vs-flort"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "main": "./src/flort.js",
+  "activationEvents": [
+    "onCommand:flort.concatenate",
+    "onView:flort-config-view"
+  ],
+  "contributes": {
+    "commands": [
+      { "command": "flort.concatenate", "title": "Flort", "category": "Flort" },
+      { "command": "flort.concatenateWithProfile", "title": "Flort with Profile", "category": "Flort" },
+      { "command": "flort.addPattern", "title": "Add Pattern", "icon": "$(add)" },
+      { "command": "flort.removePattern", "title": "Remove Pattern", "icon": "$(trash)" },
+      { "command": "flort.addExtension", "title": "Add Extension", "icon": "$(add)" },
+      { "command": "flort.removeExtension", "title": "Remove Extension", "icon": "$(trash)" },
+      { "command": "flort.addManualFile", "title": "Add Manual File", "icon": "$(add)" },
+      { "command": "flort.removeManualFile", "title": "Remove Manual File", "icon": "$(trash)" },
+      { "command": "flort.setProfile", "title": "Set Profile", "icon": "$(check)" },
+      { "command": "flort.addProfile", "title": "Add Profile", "icon": "$(add)" },
+      { "command": "flort.addExcludePattern", "title": "Add Exclude Pattern", "icon": "$(add)" },
+      { "command": "flort.removeExcludePattern", "title": "Remove Exclude Pattern", "icon": "$(trash)" },
+      { "command": "flort.addExcludeExtension", "title": "Add Exclude Extension", "icon": "$(add)" },
+      { "command": "flort.removeExcludeExtension", "title": "Remove Exclude Extension", "icon": "$(trash)" },
+      { "command": "flort.addExcludeDir", "title": "Add Exclude Directory", "icon": "$(add)" },
+      { "command": "flort.removeExcludeDir", "title": "Remove Exclude Directory", "icon": "$(trash)" },
+      { "command": "flort.toggleSetting", "title": "Toggle Setting", "icon": "$(check)" },
+      { "command": "flort.editSetting", "title": "Edit Setting", "icon": "$(edit)" },
+      { "command": "flort.refreshProfiles", "title": "Refresh Profiles", "icon": "$(refresh)" },
+      { "command": "flort.openWorkspaceSettings", "title": "Open Workspace Settings" }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "flort.concatenate",
+          "when": "workspaceFolderCount > 0"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "flort.concatenate",
+          "group": "flort@1",
+          "when": "resourceFilename != ''"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "flort.concatenate",
+          "when": "view == flort-config-view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "flort.refreshProfiles",
+          "when": "view == flort-config-view",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "flort.addPattern",
+          "when": "view == flort-config-view && viewItem == sectionPatterns",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removePattern",
+          "when": "view == flort-config-view && viewItem == pattern",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExtension",
+          "when": "view == flort-config-view && viewItem == sectionExtensions",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExtension",
+          "when": "view == flort-config-view && viewItem == extension",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addManualFile",
+          "when": "view == flort-config-view && viewItem == sectionManualFiles",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeManualFile",
+          "when": "view == flort-config-view && viewItem == manualFile",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addProfile",
+          "when": "view == flort-config-view && viewItem == sectionProfiles",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.setProfile",
+          "when": "view == flort-config-view && viewItem == profile",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludePattern",
+          "when": "view == flort-config-view && viewItem == excludePatterns",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludePattern",
+          "when": "view == flort-config-view && viewItem == excludePattern",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludeExtension",
+          "when": "view == flort-config-view && viewItem == excludeExtensions",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludeExtension",
+          "when": "view == flort-config-view && viewItem == excludeExtension",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludeDir",
+          "when": "view == flort-config-view && viewItem == excludeDirs",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludeDir",
+          "when": "view == flort-config-view && viewItem == excludeDir",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.toggleSetting",
+          "when": "view == flort-config-view && viewItem == booleanSetting",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.editSetting",
+          "when": "view == flort-config-view && (viewItem == numberSetting || viewItem == stringSetting)",
+          "group": "inline@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flort",
+      "properties": {
+        "flort.debug": { "type": "boolean", "default": false, "description": "Enable Flort debug output window" },
+        "flort.patterns": { "type": "array", "default": [], "description": "Glob patterns for Flort (included)" },
+        "flort.excludePatterns": { "type": "array", "default": [], "description": "Glob patterns to exclude" },
+        "flort.extensions": { "type": "array", "default": [], "description": "File extensions for Flort (included)" },
+        "flort.excludeExtensions": { "type": "array", "default": [], "description": "File extensions to exclude" },
+        "flort.manualFiles": { "type": "array", "default": [], "description": "Manually included files for Flort" },
+        "flort.profiles": { "type": "object", "default": {}, "description": "Profiles for Flort" },
+        "flort.currentProfile": { "type": "string", "default": "", "description": "Current active Flort profile" },
+        "flort.ignoreDirs": { "type": "array", "default": [], "description": "Directories to exclude" },
+        "flort.all": { "type": "boolean", "default": false, "description": "Include all files (respects exclude filters)" },
+        "flort.hidden": { "type": "boolean", "default": false, "description": "Include hidden files/directories" },
+        "flort.includeBinary": { "type": "boolean", "default": false, "description": "Include binary files (normally excluded)" },
+        "flort.maxDepth": { "type": "number", "default": 0, "description": "Maximum directory traversal depth (0 = unlimited)" },
+        "flort.showConfig": { "type": "boolean", "default": false, "description": "Display configuration at start of output" },
+        "flort.noTree": { "type": "boolean", "default": false, "description": "Skip directory tree generation" },
+        "flort.outline": { "type": "boolean", "default": false, "description": "Generate Python code outline" },
+        "flort.manifest": { "type": "boolean", "default": false, "description": "Create file listing without content" },
+        "flort.noDump": { "type": "boolean", "default": false, "description": "Skip file concatenation" },
+        "flort.archive": { "type": "string", "default": "", "description": "Archive type to create (zip or tar.gz)" },
+        "flort.verbose": { "type": "boolean", "default": false, "description": "Enable detailed logging" }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flort-view-container",
+          "title": "Flort",
+          "icon": "assets/vs-flort.svg"
+        }
+      ]
+    },
+    "views": {
+      "flort-view-container": [
+        {
+          "id": "flort-config-view",
+          "name": "Profile Configuration"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.0",
+    "@types/vscode": "^1.74.0"
+  },
+  "files": [
+    "src",
+    "assets",
+    "package.json",
+    "package-lock.json",
+    "README.md"
+  ]
+}
+
+--- File: settings.json
+--- Characters: 5,536
+--- Token Count: 1,521
+{
+    "flort.patterns": [],
+    "flort.extensions": [],
+    "flort.manualFiles": [],
+    "flort.profiles": {
+        "Python": {
+            "patterns": ["*.py"],
+            "extensions": [".py"],
+            "excludePatterns": ["__pycache__/*", "*.pyc"],
+            "excludeExtensions": [".pyc", ".pyo"],
+            "excludeDirs": ["__pycache__", ".pytest_cache", "venv", ".venv", "env", ".env"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": true,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "JavaScript": {
+            "patterns": ["*.js", "*.ts", "*.jsx", "*.tsx"],
+            "extensions": [".js", ".ts", ".jsx", ".tsx", ".json"],
+            "excludePatterns": ["node_modules/*", "dist/*", "build/*"],
+            "excludeExtensions": [".min.js", ".bundle.js"],
+            "excludeDirs": ["node_modules", "dist", "build", ".next", "coverage"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "C": {
+            "patterns": ["*.c", "*.h"],
+            "extensions": [".c", ".h"],
+            "excludePatterns": ["*.o", "*.obj", "*.exe"],
+            "excludeExtensions": [".o", ".obj", ".exe", ".dll", ".so"],
+            "excludeDirs": ["build", "Debug", "Release", ".vs"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "C++": {
+            "patterns": ["*.cpp", "*.cc", "*.cxx", "*.hpp", "*.h"],
+            "extensions": [".cpp", ".cc", ".cxx", ".hpp", ".h", ".hxx"],
+            "excludePatterns": ["*.o", "*.obj", "*.exe"],
+            "excludeExtensions": [".o", ".obj", ".exe", ".dll", ".so"],
+            "excludeDirs": ["build", "Debug", "Release", ".vs", "cmake-build-debug", "cmake-build-release"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "PHP": {
+            "patterns": ["*.php", "*.phtml"],
+            "extensions": [".php", ".phtml", ".php3", ".php4", ".php5"],
+            "excludePatterns": ["vendor/*", "cache/*"],
+            "excludeExtensions": [],
+            "excludeDirs": ["vendor", "cache", "storage/cache", "bootstrap/cache"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "Markdown": {
+            "patterns": ["*.md", "*.markdown"],
+            "extensions": [".md", ".markdown", ".mdown", ".mkd"],
+            "excludePatterns": [],
+            "excludeExtensions": [],
+            "excludeDirs": [],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": false,
+            "includeBinary": false,
+            "noTree": true,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        },
+        "All Files": {
+            "patterns": [],
+            "extensions": [],
+            "excludePatterns": ["*.log", "*.tmp"],
+            "excludeExtensions": [".log", ".tmp", ".cache"],
+            "excludeDirs": ["node_modules", "__pycache__", ".git", ".svn", "vendor", "build", "dist"],
+            "manualFiles": [],
+            "debug": false,
+            "showConfig": false,
+            "hidden": false,
+            "all": true,
+            "includeBinary": false,
+            "noTree": false,
+            "outline": false,
+            "manifest": false,
+            "noDump": false,
+            "verbose": false,
+            "maxDepth": 0,
+            "archive": ""
+        }
+    },
+    "flort.currentProfile": "",
+    "flort.excludePatterns": [],
+    "flort.excludeExtensions": [],
+    "flort.ignoreDirs": [],
+    "flort.debug": false,
+    "flort.showConfig": false,
+    "flort.hidden": false,
+    "flort.all": false,
+    "flort.includeBinary": false,
+    "flort.noTree": false,
+    "flort.outline": false,
+    "flort.manifest": false,
+    "flort.noDump": false,
+    "flort.archive": "",
+    "flort.verbose": false,
+    "flort.maxDepth": 0
+}
+
+--- File: src/command.js
+--- Characters: 15,945
+--- Token Count: 3,242
+const vscode = require('vscode');
+
+async function update_config_array(section, updater) {
+    const config = vscode.workspace.getConfiguration('flort');
+    const values = config.get(section, []);
+    const new_values = updater(values);
+    await config.update(section, new_values, vscode.ConfigurationTarget.Workspace);
+
+    // Auto-save to current profile
+    await save_current_settings_to_active_profile();
+}
+
+async function update_config_object(section, updater) {
+    const config = vscode.workspace.getConfiguration('flort');
+    const obj = config.get(section, {});
+    const new_obj = updater(obj);
+    await config.update(section, new_obj, vscode.ConfigurationTarget.Workspace);
+}
+
+async function load_profile_settings(profile_name) {
+    const config = vscode.workspace.getConfiguration('flort');
+    const profiles = config.get('profiles', {});
+
+    if (!profiles[profile_name]) {
+        throw new Error(`Profile "${profile_name}" not found`);
+    }
+
+    const profile = profiles[profile_name];
+
+    // Load profile settings into active workspace configuration
+    await config.update('patterns', profile.patterns || [], vscode.ConfigurationTarget.Workspace);
+    await config.update('extensions', profile.extensions || [], vscode.ConfigurationTarget.Workspace);
+    await config.update('manualFiles', profile.manualFiles || [], vscode.ConfigurationTarget.Workspace);
+    await config.update('excludePatterns', profile.excludePatterns || [], vscode.ConfigurationTarget.Workspace);
+    await config.update('excludeExtensions', profile.excludeExtensions || [], vscode.ConfigurationTarget.Workspace);
+    await config.update('ignoreDirs', profile.ignoreDirs || [], vscode.ConfigurationTarget.Workspace);
+
+    // Load other profile settings if they exist
+    if (profile.debug !== undefined) await config.update('debug', profile.debug, vscode.ConfigurationTarget.Workspace);
+    if (profile.showConfig !== undefined) await config.update('showConfig', profile.showConfig, vscode.ConfigurationTarget.Workspace);
+    if (profile.hidden !== undefined) await config.update('hidden', profile.hidden, vscode.ConfigurationTarget.Workspace);
+    if (profile.all !== undefined) await config.update('all', profile.all, vscode.ConfigurationTarget.Workspace);
+    if (profile.includeBinary !== undefined) await config.update('includeBinary', profile.includeBinary, vscode.ConfigurationTarget.Workspace);
+    if (profile.noTree !== undefined) await config.update('noTree', profile.noTree, vscode.ConfigurationTarget.Workspace);
+    if (profile.outline !== undefined) await config.update('outline', profile.outline, vscode.ConfigurationTarget.Workspace);
+    if (profile.manifest !== undefined) await config.update('manifest', profile.manifest, vscode.ConfigurationTarget.Workspace);
+    if (profile.noDump !== undefined) await config.update('noDump', profile.noDump, vscode.ConfigurationTarget.Workspace);
+    if (profile.verbose !== undefined) await config.update('verbose', profile.verbose, vscode.ConfigurationTarget.Workspace);
+    if (profile.maxDepth !== undefined) await config.update('maxDepth', profile.maxDepth, vscode.ConfigurationTarget.Workspace);
+    if (profile.archive !== undefined) await config.update('archive', profile.archive, vscode.ConfigurationTarget.Workspace);
+}
+
+async function save_current_settings_to_profile(profile_name) {
+    const config = vscode.workspace.getConfiguration('flort');
+    const profiles = config.get('profiles', {});
+
+    // Capture ALL current settings
+    const current_settings = {
+        patterns: config.get('patterns', []),
+        extensions: config.get('extensions', []),
+        manualFiles: config.get('manualFiles', []),
+        excludePatterns: config.get('excludePatterns', []),
+        excludeExtensions: config.get('excludeExtensions', []),
+        ignoreDirs: config.get('ignoreDirs', []),
+        debug: config.get('debug', false),
+        showConfig: config.get('showConfig', false),
+        hidden: config.get('hidden', false),
+        all: config.get('all', false),
+        includeBinary: config.get('includeBinary', false),
+        noTree: config.get('noTree', false),
+        outline: config.get('outline', false),
+        manifest: config.get('manifest', false),
+        noDump: config.get('noDump', false),
+        verbose: config.get('verbose', false),
+        maxDepth: config.get('maxDepth', 0),
+        archive: config.get('archive', '')
+    };
+
+    profiles[profile_name] = current_settings;
+    await config.update('profiles', profiles, vscode.ConfigurationTarget.Workspace);
+}
+
+async function save_current_settings_to_active_profile() {
+    const config = vscode.workspace.getConfiguration('flort');
+    const current_profile = config.get('currentProfile', '');
+
+    if (current_profile) {
+        await save_current_settings_to_profile(current_profile);
+    }
+}
+
+function register_flort_commands(context, provider) {
+    context.subscriptions.push(
+        vscode.commands.registerCommand('flort.addPattern', async () => {
+            const value = await vscode.window.showInputBox({ prompt: 'Enter glob pattern (ex: *.txt)' });
+            if (value) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_patterns = config.get('patterns', []);
+                if (!current_patterns.includes(value)) {
+                    await update_config_array('patterns', arr => [...arr, value]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`Pattern "${value}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removePattern', async (item) => {
+            await update_config_array('patterns', arr => arr.filter(p => p !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.addExtension', async () => {
+            const value = await vscode.window.showInputBox({ prompt: 'Enter extension (ex: .js)' });
+            if (value) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_extensions = config.get('extensions', []);
+                if (!current_extensions.includes(value)) {
+                    await update_config_array('extensions', arr => [...arr, value]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`Extension "${value}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeExtension', async (item) => {
+            await update_config_array('extensions', arr => arr.filter(e => e !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.addManualFile', async () => {
+            const uri = await vscode.window.showOpenDialog({ canSelectFiles: true, canSelectMany: false });
+            if (uri && uri.length > 0) {
+                const path = uri[0].fsPath;
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_files = config.get('manualFiles', []);
+                if (!current_files.includes(path)) {
+                    await update_config_array('manualFiles', arr => [...arr, path]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`File "${path}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeManualFile', async (item) => {
+            await update_config_array('manualFiles', arr => arr.filter(f => f !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.setProfile', async (item) => {
+            const profile_name = item.label.replace(' (active)', '');
+            const config = vscode.workspace.getConfiguration('flort');
+            const current_profile = config.get('currentProfile', '');
+
+            // Save current settings to the currently active profile before switching
+            if (current_profile && current_profile !== profile_name) {
+                await save_current_settings_to_profile(current_profile);
+            }
+
+            try {
+                // Load the selected profile settings
+                await load_profile_settings(profile_name);
+
+                // Set as current profile
+                await config.update('currentProfile', profile_name, vscode.ConfigurationTarget.Workspace);
+
+                setTimeout(() => provider.refresh(), 100);
+                vscode.window.showInformationMessage(`Switched to profile: ${profile_name}`);
+            } catch (error) {
+                vscode.window.showErrorMessage(`Failed to switch to profile: ${error.message}`);
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.addProfile', async () => {
+            const profile_name = await vscode.window.showInputBox({ prompt: 'Enter profile name' });
+            if (profile_name) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_profiles = config.get('profiles', {});
+                if (!current_profiles[profile_name]) {
+                    // Save current settings as the new profile
+                    await save_current_settings_to_profile(profile_name);
+                    await config.update('currentProfile', profile_name, vscode.ConfigurationTarget.Workspace);
+                    setTimeout(() => provider.refresh(), 100);
+                    vscode.window.showInformationMessage(`Created and switched to profile: ${profile_name}`);
+                } else {
+                    vscode.window.showWarningMessage(`Profile "${profile_name}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.toggleSetting', async (item) => {
+            if (!item || !item.settingKey) {
+                vscode.window.showErrorMessage('Invalid setting item');
+                return;
+            }
+            const setting_key = item.settingKey;
+            const config = vscode.workspace.getConfiguration('flort');
+            const current = config.get(setting_key, false);
+            await config.update(setting_key, !current, vscode.ConfigurationTarget.Workspace);
+
+            // Auto-save to current profile
+            await save_current_settings_to_active_profile();
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.editSetting', async (item) => {
+            if (!item || !item.settingKey) {
+                vscode.window.showErrorMessage('Invalid setting item');
+                return;
+            }
+            const setting_key = item.settingKey;
+            const config = vscode.workspace.getConfiguration('flort');
+            const current = config.get(setting_key, '');
+            const value = await vscode.window.showInputBox({
+                prompt: `Enter value for ${setting_key}`,
+                value: String(current)
+            });
+            if (value !== undefined) {
+                const parsed = isNaN(value) ? value : Number(value);
+                await config.update(setting_key, parsed, vscode.ConfigurationTarget.Workspace);
+
+                // Auto-save to current profile
+                await save_current_settings_to_active_profile();
+                setTimeout(() => provider.refresh(), 100);
+            }
+        }),
+
+        // New commands for exclude patterns, extensions, and exclude dirs
+        vscode.commands.registerCommand('flort.addExcludePattern', async () => {
+            const value = await vscode.window.showInputBox({ prompt: 'Enter exclude pattern (ex: *.tmp)' });
+            if (value) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_patterns = config.get('excludePatterns', []);
+                if (!current_patterns.includes(value)) {
+                    await update_config_array('excludePatterns', arr => [...arr, value]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`Exclude pattern "${value}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeExcludePattern', async (item) => {
+            await update_config_array('excludePatterns', arr => arr.filter(p => p !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.addExcludeExtension', async () => {
+            const value = await vscode.window.showInputBox({ prompt: 'Enter exclude extension (ex: .tmp)' });
+            if (value) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_extensions = config.get('excludeExtensions', []);
+                if (!current_extensions.includes(value)) {
+                    await update_config_array('excludeExtensions', arr => [...arr, value]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`Exclude extension "${value}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeExcludeExtension', async (item) => {
+            await update_config_array('excludeExtensions', arr => arr.filter(e => e !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        vscode.commands.registerCommand('flort.addExcludeDir', async () => {
+            const value = await vscode.window.showInputBox({ prompt: 'Enter directory to exclude (ex: node_modules)' });
+            if (value) {
+                const config = vscode.workspace.getConfiguration('flort');
+                const current_dirs = config.get('ignoreDirs', []);
+                if (!current_dirs.includes(value)) {
+                    await update_config_array('ignoreDirs', arr => [...arr, value]);
+                    setTimeout(() => provider.refresh(), 100);
+                } else {
+                    vscode.window.showWarningMessage(`Exclude directory "${value}" already exists`);
+                }
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeExcludeDir', async (item) => {
+            await update_config_array('ignoreDirs', arr => arr.filter(d => d !== item.label));
+            setTimeout(() => provider.refresh(), 100);
+        }),
+
+        // Simplified list commands that were causing issues
+        vscode.commands.registerCommand('flort.addToListSetting', async (setting_key) => {
+            const value = await vscode.window.showInputBox({ prompt: `Enter value for ${setting_key}` });
+            if (value) {
+                update_config_array(setting_key, arr => [...arr, value]);
+                provider.refresh();
+            }
+        }),
+
+        vscode.commands.registerCommand('flort.removeFromListSetting', async (item) => {
+            const setting_key = item.settingKey;
+            const value = item.label;
+            update_config_array(setting_key, arr => arr.filter(v => v !== value));
+            provider.refresh();
+        }),
+
+        // New commands for refresh and settings
+        vscode.commands.registerCommand('flort.refreshProfiles', () => {
+            provider.refresh();
+        }),
+
+        vscode.commands.registerCommand('flort.openWorkspaceSettings', async () => {
+            await vscode.commands.executeCommand('workbench.action.openWorkspaceSettingsFile');
+        })
+    );
+}
+
+module.exports = {
+    register_flort_commands,
+    save_current_settings_to_profile,
+    load_profile_settings
+};
+
+--- File: src/flort.js
+--- Characters: 18,018
+--- Token Count: 3,638
+const vscode = require('vscode');
+const { exec } = require('child_process');
+const path = require('path');
+const { FlortConfigProvider } = require('./flort_config_provider');
+const { register_flort_commands, save_current_settings_to_profile, load_profile_settings } = require('./command');
+
+function activate(context) {
+    const flort_config_provider = new FlortConfigProvider();
+    vscode.window.registerTreeDataProvider('flort-config-view', flort_config_provider);
+
+    // Initialize default profiles on first activation
+    initialize_default_profiles();
+
+    register_flort_commands(context, flort_config_provider);
+
+    // Main flort command - uses current profile
+    const flort_command = vscode.commands.registerCommand('flort.concatenate', async (...args) => {
+        await run_flort_command(args);
+    });
+
+    // Alternative command for profile selection
+    const flort_with_profile_command = vscode.commands.registerCommand('flort.concatenateWithProfile', async (...args) => {
+        const config = vscode.workspace.getConfiguration('flort');
+        const profiles = config.get('profiles', {});
+        const profile_names = Object.keys(profiles);
+
+        if (profile_names.length === 0) {
+            // No profiles, just run normally
+            await run_flort_command(args);
+            return;
+        }
+
+        if (profile_names.length === 1) {
+            // Only one profile, use it
+            const profile_name = profile_names[0];
+            const original_profile = config.get('currentProfile', '');
+
+            // Save current settings if there's an active profile
+            if (original_profile) {
+                await save_current_settings_to_profile(original_profile);
+            }
+
+            // Load and set the profile
+            await load_profile_settings(profile_name);
+            await config.update('currentProfile', profile_name, vscode.ConfigurationTarget.Workspace);
+
+            try {
+                await run_flort_command(args);
+            } finally {
+                // Restore original profile if there was one
+                if (original_profile) {
+                    await load_profile_settings(original_profile);
+                    await config.update('currentProfile', original_profile, vscode.ConfigurationTarget.Workspace);
+                } else {
+                    await config.update('currentProfile', '', vscode.ConfigurationTarget.Workspace);
+                }
+            }
+            return;
+        }
+
+        // Multiple profiles - show dropdown popup
+        const current_profile = config.get('currentProfile', '');
+        const profile_items = profile_names.map(name => ({
+            label: name,
+            description: name === current_profile ? '(current)' : '',
+            detail: `Run flort with ${name} profile`
+        }));
+
+        const selected = await vscode.window.showQuickPick(profile_items, {
+            placeHolder: 'Choose profile to run flort with...',
+            canPickMany: false,
+            ignoreFocusOut: false,
+            matchOnDescription: false,
+            matchOnDetail: false
+        });
+
+        if (selected) {
+            const original_profile = current_profile;
+
+            // Save current settings to current profile before switching
+            if (original_profile) {
+                await save_current_settings_to_profile(original_profile);
+            }
+
+            // Load selected profile
+            await load_profile_settings(selected.label);
+            await config.update('currentProfile', selected.label, vscode.ConfigurationTarget.Workspace);
+
+            try {
+                await run_flort_command(args);
+            } finally {
+                // Restore original profile
+                if (original_profile) {
+                    await load_profile_settings(original_profile);
+                    await config.update('currentProfile', original_profile, vscode.ConfigurationTarget.Workspace);
+                } else {
+                    await config.update('currentProfile', '', vscode.ConfigurationTarget.Workspace);
+                }
+            }
+        }
+    });
+
+    async function run_flort_command(args) {
+        try {
+            const config = vscode.workspace.getConfiguration('flort');
+            const debug_enabled = config.get('debug', false);
+
+            const output_channel = vscode.window.createOutputChannel('Flort Debug');
+            output_channel.clear();
+
+            // collect selections
+            let selected_items = [];
+
+            if (args.length > 1 && Array.isArray(args[1])) {
+                selected_items = args[1];
+            } else if (args.length > 0 && args[0]) {
+                selected_items = [args[0]];
+            } else {
+                const active_editor = vscode.window.activeTextEditor;
+                if (active_editor) {
+                    selected_items = [active_editor.document.uri];
+                } else if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+                    // Default to the first workspace folder if no files selected and no active editor
+                    selected_items = [vscode.workspace.workspaceFolders[0].uri];
+                }
+            }
+
+            if (selected_items.length === 0) {
+                vscode.window.showErrorMessage('No files, folders, or workspace available for flort');
+                return;
+            }
+
+            // split files / dirs
+            const files = [];
+            const dirs = [];
+
+            for (const item of selected_items) {
+                const fs_path = item.fsPath;
+                try {
+                    const stat = await vscode.workspace.fs.stat(item);
+                    if (stat.type === vscode.FileType.Directory) {
+                        dirs.push(`"${fs_path}"`);
+                    } else {
+                        files.push(`"${fs_path}"`);
+                    }
+                } catch (err) {
+                    if (debug_enabled) {
+                        output_channel.appendLine(`ERROR: Failed to stat ${fs_path}: ${err.message}`);
+                    }
+                }
+            }
+
+            // get current configuration (will use active profile settings)
+            const patterns = config.get('patterns', []);
+            const extensions = config.get('extensions', []);
+            const manual_files = config.get('manualFiles', []);
+            const exclude_patterns = config.get('excludePatterns', []);
+            const exclude_extensions = config.get('excludeExtensions', []);
+            const ignore_dirs = config.get('ignoreDirs', []);
+
+            // format manual files
+            const formatted_manual_files = manual_files.map(f => `"${f}"`);
+
+            // build args
+            const patterns_arg = patterns.length > 0 ? `-g ${patterns.map(p => `'${p}'`).join(',')}` : '';
+            const extensions_arg = extensions.length > 0 ? `-e ${extensions.map(e => e.startsWith('.') ? e.substring(1) : e).join(',')}` : '';
+            const exclude_patterns_arg = exclude_patterns.length > 0 ? `--exclude-patterns ${exclude_patterns.map(p => `'${p}'`).join(',')}` : '';
+            const exclude_extensions_arg = exclude_extensions.length > 0 ? `--exclude-extensions ${exclude_extensions.map(e => e.startsWith('.') ? e.substring(1) : e).join(',')}` : '';
+            const ignore_dirs_arg = ignore_dirs.length > 0 ? `--ignore-dirs ${ignore_dirs.join(',')}` : '';
+
+            // behavior flags
+            const flags = [];
+            if (config.get('all', false)) flags.push('--all');
+            if (config.get('hidden', false)) flags.push('--hidden');
+            if (config.get('includeBinary', false)) flags.push('--include-binary');
+            const max_depth = config.get('maxDepth', 0);
+            if (max_depth > 0) flags.push(`--max-depth ${max_depth}`);
+
+            // output control
+            if (config.get('showConfig', false)) flags.push('--show-config');
+            if (config.get('noTree', false)) flags.push('--no-tree');
+            if (config.get('outline', false)) flags.push('--outline');
+            if (config.get('manifest', false)) flags.push('--manifest');
+            if (config.get('noDump', false)) flags.push('--no-dump');
+            const archive = config.get('archive', '').trim();
+            if (archive) flags.push(`--archive ${archive}`);
+            if (config.get('verbose', false)) flags.push('--verbose');
+
+            // build full command
+            const files_arg = files.concat(formatted_manual_files).join(' ');
+            const dirs_arg = dirs.join(' ');
+
+            const parts = [
+                'flort',
+                files_arg ? `-f ${files_arg}` : '',
+                patterns_arg,
+                extensions_arg,
+                exclude_patterns_arg,
+                exclude_extensions_arg,
+                ignore_dirs_arg,
+                ...flags,
+                dirs_arg,
+                '-o stdio'
+            ];
+
+            const full_command = parts.filter(p => p && p.trim() !== '').join(' ');
+
+            // debug log
+            if (debug_enabled) {
+                output_channel.appendLine(`Selected files: ${files_arg}`);
+                output_channel.appendLine(`Selected dirs: ${dirs_arg}`);
+                output_channel.appendLine(`Patterns: ${patterns_arg}`);
+                output_channel.appendLine(`Extensions: ${extensions_arg}`);
+                output_channel.appendLine(`Exclude Patterns: ${exclude_patterns_arg}`);
+                output_channel.appendLine(`Exclude Extensions: ${exclude_extensions_arg}`);
+                output_channel.appendLine(`Ignore Dirs: ${ignore_dirs_arg}`);
+                output_channel.appendLine(`Flags: ${flags.join(' ')}`);
+                output_channel.appendLine(`Full command: ${full_command}`);
+            }
+
+            // run flort
+            return new Promise((resolve, reject) => {
+                exec(full_command, {
+                    cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || process.cwd(),
+                    maxBuffer: 1024 * 1024 * 10
+                }, async (error, stdout, stderr) => {
+                    if (error) {
+                        vscode.window.showErrorMessage(`Flort failed: ${error.message}`);
+                        if (debug_enabled) {
+                            output_channel.appendLine(`ERROR: ${error.message}`);
+                            output_channel.show();
+                        }
+                        reject(error);
+                        return;
+                    }
+
+                    if (stderr && stderr.trim() !== '') {
+                        vscode.window.showWarningMessage(`Flort warning: ${stderr}`);
+                    }
+
+                    try {
+                        const document = await vscode.workspace.openTextDocument({
+                            content: stdout,
+                            language: 'text'
+                        });
+
+                        // Document opens in background without stealing focus
+                        resolve();
+                    } catch (doc_error) {
+                        vscode.window.showErrorMessage(`Failed to open result: ${doc_error.message}`);
+                        reject(doc_error);
+                    }
+                });
+            });
+
+        } catch (err) {
+            vscode.window.showErrorMessage(`Flort extension error: ${err.message}`);
+        }
+    }
+
+    context.subscriptions.push(flort_command);
+    context.subscriptions.push(flort_with_profile_command);
+}
+
+async function initialize_default_profiles() {
+    const config = vscode.workspace.getConfiguration('flort');
+    const existing_profiles = config.get('profiles', {});
+
+    console.log('Current profiles:', existing_profiles);
+
+    // Only create defaults if no profiles exist
+    if (Object.keys(existing_profiles).length === 0) {
+        console.log('No profiles found, creating defaults...');
+        const default_profiles = {
+            "Python": {
+                "patterns": [],
+                "extensions": ["py"],
+                "excludePatterns": ["__pycache__/*", "*.pyc"],
+                "excludeExtensions": ["pyc", "pyo"],
+                "ignoreDirs": ["__pycache__", ".pytest_cache", "venv", ".venv", "env", ".env"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": true,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "JavaScript": {
+                "patterns": [],
+                "extensions": ["js", "ts", "jsx", "tsx", "json"],
+                "excludePatterns": ["node_modules/*", "dist/*", "build/*"],
+                "excludeExtensions": ["min.js", "bundle.js"],
+                "ignoreDirs": ["node_modules", "dist", "build", ".next", "coverage"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "C": {
+                "patterns": [],
+                "extensions": ["c", "h"],
+                "excludePatterns": ["*.o", "*.obj", "*.exe"],
+                "excludeExtensions": ["o", "obj", "exe", "dll", "so"],
+                "ignoreDirs": ["build", "Debug", "Release", ".vs"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "C++": {
+                "patterns": [],
+                "extensions": ["cpp", "cc", "cxx", "hpp", "h", "hxx"],
+                "excludePatterns": ["*.o", "*.obj", "*.exe"],
+                "excludeExtensions": ["o", "obj", "exe", "dll", "so"],
+                "ignoreDirs": ["build", "Debug", "Release", ".vs", "cmake-build-debug", "cmake-build-release"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "PHP": {
+                "patterns": [],
+                "extensions": [".php", ".phtml", ".php3", ".php4", ".php5"],
+                "excludePatterns": ["vendor/*", "cache/*"],
+                "excludeExtensions": [],
+                "ignoreDirs": ["vendor", "cache", "storage/cache", "bootstrap/cache"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "Markdown": {
+                "patterns": [],
+                "extensions": [".md", ".markdown", ".mdown", ".mkd"],
+                "excludePatterns": [],
+                "excludeExtensions": [],
+                "ignoreDirs": [],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": false,
+                "includeBinary": false,
+                "noTree": true,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            },
+            "All Files": {
+                "patterns": [],
+                "extensions": [],
+                "excludePatterns": ["*.log", "*.tmp"],
+                "excludeExtensions": [".log", ".tmp", ".cache"],
+                "ignoreDirs": ["node_modules", "__pycache__", ".git", ".svn", "vendor", "build", "dist"],
+                "manualFiles": [],
+                "debug": false,
+                "showConfig": false,
+                "hidden": false,
+                "all": true,
+                "includeBinary": false,
+                "noTree": false,
+                "outline": false,
+                "manifest": false,
+                "noDump": false,
+                "verbose": false,
+                "maxDepth": 0,
+                "archive": ""
+            }
+        };
+
+        try {
+            await config.update('profiles', default_profiles, vscode.ConfigurationTarget.Workspace);
+            console.log('Default profiles created successfully');
+            // Refresh the tree view after creating profiles
+            setTimeout(() => {
+                vscode.commands.executeCommand('flort.refreshProfiles');
+            }, 100);
+        } catch (error) {
+            console.error('Failed to initialize default Flort profiles:', error);
+        }
+    } else {
+        console.log('Profiles already exist, skipping initialization');
+    }
+}
+
+function deactivate() {}
+
+module.exports = {
+    activate,
+    deactivate
+};
+
+--- File: src/flort_config_provider.js
+--- Characters: 8,033
+--- Token Count: 1,456
+const vscode = require('vscode');
+
+class FlortConfigProvider {
+    constructor() {
+        this._on_did_change_tree_data = new vscode.EventEmitter();
+        this.onDidChangeTreeData = this._on_did_change_tree_data.event;
+    }
+
+    refresh() {
+        this._on_did_change_tree_data.fire();
+    }
+
+    getTreeItem(element) {
+        return element;
+    }
+
+    async getChildren(element) {
+        const config = vscode.workspace.getConfiguration('flort');
+
+        if (!element) {
+            return [
+                this._create_section('Profiles', 'sectionProfiles'),
+                this._create_separator(),
+                this._create_section('File Selection', 'sectionFileSelection'),
+                this._create_section('Filtering', 'sectionFiltering'),
+                this._create_section('Output Options', 'sectionOutputOptions'),
+                this._create_section('Advanced Settings', 'sectionAdvancedSettings')
+            ];
+        }
+
+        switch (element.contextValue) {
+            case 'sectionProfiles': {
+                const profiles = config.get('profiles', {});
+                const current_profile = config.get('currentProfile', '');
+                const profile_items = Object.keys(profiles).map(name => {
+                    const label = name === current_profile ? `${name} (active)` : name;
+                    const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+                    item.contextValue = 'profile';
+                    item.iconPath = new vscode.ThemeIcon(name === current_profile ? 'star-full' : 'account');
+                    item.command = {
+                        command: 'flort.openWorkspaceSettings',
+                        title: 'Open Settings',
+                        arguments: []
+                    };
+                    return item;
+                });
+                return profile_items;
+            }
+            case 'sectionFileSelection': {
+                return [
+                    this._create_subsection('Patterns', 'sectionPatterns'),
+                    this._create_subsection('Extensions', 'sectionExtensions'),
+                    this._create_subsection('Manual Files', 'sectionManualFiles')
+                ];
+            }
+            case 'sectionFiltering': {
+                return [
+                    this._create_subsection('Exclude Patterns', 'excludePatterns'),
+                    this._create_subsection('Exclude Extensions', 'excludeExtensions'),
+                    this._create_subsection('Exclude Directories', 'excludeDirs')
+                ];
+            }
+            case 'sectionOutputOptions': {
+                const config = vscode.workspace.getConfiguration('flort');
+                return [
+                    this._create_boolean_setting(config, 'showConfig', 'Show Config'),
+                    this._create_boolean_setting(config, 'noTree', 'Skip Directory Tree'),
+                    this._create_boolean_setting(config, 'outline', 'Generate Code Outline'),
+                    this._create_boolean_setting(config, 'manifest', 'File Listing Only'),
+                    this._create_boolean_setting(config, 'noDump', 'Skip File Content'),
+                    this._create_string_setting(config, 'archive', 'Archive Type')
+                ];
+            }
+            case 'sectionAdvancedSettings': {
+                const config = vscode.workspace.getConfiguration('flort');
+                return [
+                    this._create_boolean_setting(config, 'debug', 'Debug Output'),
+                    this._create_boolean_setting(config, 'verbose', 'Verbose Logging'),
+                    this._create_boolean_setting(config, 'all', 'Include All Files'),
+                    this._create_boolean_setting(config, 'hidden', 'Include Hidden Files'),
+                    this._create_boolean_setting(config, 'includeBinary', 'Include Binary Files'),
+                    this._create_number_setting(config, 'maxDepth', 'Max Directory Depth')
+                ];
+            }
+            case 'sectionPatterns': {
+                const patterns = config.get('patterns', []);
+                return patterns.map(val => this._create_item(val, 'pattern'));
+            }
+            case 'sectionExtensions': {
+                const extensions = config.get('extensions', []);
+                return extensions.map(val => this._create_item(val, 'extension'));
+            }
+            case 'sectionManualFiles': {
+                const manual_files = config.get('manualFiles', []);
+                return manual_files.map(val => this._create_item(val, 'manualFile'));
+            }
+            case 'excludePatterns': {
+                const exclude_patterns = config.get('excludePatterns', []);
+                return exclude_patterns.map(val => this._create_item(val, 'excludePattern'));
+            }
+            case 'excludeExtensions': {
+                const exclude_extensions = config.get('excludeExtensions', []);
+                return exclude_extensions.map(val => this._create_item(val, 'excludeExtension'));
+            }
+            case 'excludeDirs': {
+                const exclude_dirs = config.get('ignoreDirs', []);
+                return exclude_dirs.map(val => this._create_item(val, 'excludeDir'));
+            }
+            default:
+                return [];
+        }
+    }
+
+    _create_section(label, section_context) {
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.Expanded);
+        item.contextValue = section_context;
+        item.iconPath = new vscode.ThemeIcon('folder-opened');
+        return item;
+    }
+
+    _create_subsection(label, section_context) {
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.Collapsed);
+        item.contextValue = section_context;
+        item.iconPath = new vscode.ThemeIcon('list-unordered');
+        return item;
+    }
+
+    _create_separator() {
+        const item = new vscode.TreeItem('─────────────────', vscode.TreeItemCollapsibleState.None);
+        item.contextValue = 'separator';
+        item.iconPath = new vscode.ThemeIcon('dash');
+        return item;
+    }
+
+    _create_item(label, context_value) {
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+        item.contextValue = context_value;
+        item.iconPath = this._get_icon_for_context(context_value);
+        return item;
+    }
+
+    _create_boolean_setting(config, key, label) {
+        const value = config.get(key, false);
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+        item.contextValue = 'booleanSetting';
+        item.settingKey = key;
+        item.iconPath = new vscode.ThemeIcon(value ? 'toggle-on' : 'toggle-off');
+        item.description = value ? 'On' : 'Off';
+        return item;
+    }
+
+    _create_number_setting(config, key, label) {
+        const value = config.get(key, 0);
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+        item.contextValue = 'numberSetting';
+        item.settingKey = key;
+        item.iconPath = new vscode.ThemeIcon('symbol-number');
+        item.description = String(value);
+        return item;
+    }
+
+    _create_string_setting(config, key, label) {
+        const value = config.get(key, '');
+        const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+        item.contextValue = 'stringSetting';
+        item.settingKey = key;
+        item.iconPath = new vscode.ThemeIcon('symbol-string');
+        item.description = value || '(none)';
+        return item;
+    }
+
+    _get_icon_for_context(context_value) {
+        const icon_map = {
+            pattern: 'search',
+            extension: 'file-code',
+            manualFile: 'file',
+            excludePattern: 'exclude',
+            excludeExtension: 'file-binary',
+            excludeDir: 'folder'
+        };
+        return new vscode.ThemeIcon(icon_map[context_value] || 'circle');
+    }
+}
+
+module.exports = { FlortConfigProvider };
+
+
+## Concatenation Summary
+Files processed: 6
+Files skipped: 0
+Total characters: 57,528
+Total tokens: 12,664
+
+Completed at: 2025-06-03 08:13:25
+
