@@ -1,0 +1,210 @@
+{
+  "name": "wl-flort",
+  "displayName": "VS-Flort",
+  "description": "File concatenation tool integration for VSCode - concatenate multiple files into a single output",
+  "version": "0.0.30",
+  "publisher": "WatkinsLabs",
+  "author": {
+    "name": "Chris Watkins",
+    "email": "chris@watkinslabs.com",
+    "url": "https://watkinslabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/watkinslabs/vs-flort"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "main": "./src/flort.js",
+  "activationEvents": [
+    "onCommand:flort.concatenate",
+    "onView:flort-config-view"
+  ],
+  "contributes": {
+    "commands": [
+      { "command": "flort.concatenate", "title": "Flort", "category": "Flort" },
+      { "command": "flort.concatenateWithProfile", "title": "Flort with Profile", "category": "Flort" },
+      { "command": "flort.addPattern", "title": "Add Pattern", "icon": "$(add)" },
+      { "command": "flort.removePattern", "title": "Remove Pattern", "icon": "$(trash)" },
+      { "command": "flort.addExtension", "title": "Add Extension", "icon": "$(add)" },
+      { "command": "flort.removeExtension", "title": "Remove Extension", "icon": "$(trash)" },
+      { "command": "flort.addManualFile", "title": "Add Manual File", "icon": "$(add)" },
+      { "command": "flort.removeManualFile", "title": "Remove Manual File", "icon": "$(trash)" },
+      { "command": "flort.setProfile", "title": "Set Profile", "icon": "$(check)" },
+      { "command": "flort.addProfile", "title": "Add Profile", "icon": "$(add)" },
+      { "command": "flort.addExcludePattern", "title": "Add Exclude Pattern", "icon": "$(add)" },
+      { "command": "flort.removeExcludePattern", "title": "Remove Exclude Pattern", "icon": "$(trash)" },
+      { "command": "flort.addExcludeExtension", "title": "Add Exclude Extension", "icon": "$(add)" },
+      { "command": "flort.removeExcludeExtension", "title": "Remove Exclude Extension", "icon": "$(trash)" },
+      { "command": "flort.addExcludeDir", "title": "Add Exclude Directory", "icon": "$(add)" },
+      { "command": "flort.removeExcludeDir", "title": "Remove Exclude Directory", "icon": "$(trash)" },
+      { "command": "flort.toggleSetting", "title": "Toggle Setting", "icon": "$(check)" },
+      { "command": "flort.editSetting", "title": "Edit Setting", "icon": "$(edit)" },
+      { "command": "flort.refreshProfiles", "title": "Refresh Profiles", "icon": "$(refresh)" },
+      { "command": "flort.openWorkspaceSettings", "title": "Open Workspace Settings" }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "flort.concatenate",
+          "when": "workspaceFolderCount > 0"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "flort.concatenate",
+          "group": "flort@1",
+          "when": "resourceFilename != ''"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "flort.concatenate",
+          "when": "view == flort-config-view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "flort.refreshProfiles",
+          "when": "view == flort-config-view",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "flort.addPattern",
+          "when": "view == flort-config-view && viewItem == sectionPatterns",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removePattern",
+          "when": "view == flort-config-view && viewItem == pattern",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExtension",
+          "when": "view == flort-config-view && viewItem == sectionExtensions",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExtension",
+          "when": "view == flort-config-view && viewItem == extension",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addManualFile",
+          "when": "view == flort-config-view && viewItem == sectionManualFiles",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeManualFile",
+          "when": "view == flort-config-view && viewItem == manualFile",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addProfile",
+          "when": "view == flort-config-view && viewItem == sectionProfiles",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.setProfile",
+          "when": "view == flort-config-view && viewItem == profile",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludePattern",
+          "when": "view == flort-config-view && viewItem == excludePatterns",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludePattern",
+          "when": "view == flort-config-view && viewItem == excludePattern",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludeExtension",
+          "when": "view == flort-config-view && viewItem == excludeExtensions",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludeExtension",
+          "when": "view == flort-config-view && viewItem == excludeExtension",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.addExcludeDir",
+          "when": "view == flort-config-view && viewItem == excludeDirs",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.removeExcludeDir",
+          "when": "view == flort-config-view && viewItem == excludeDir",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.toggleSetting",
+          "when": "view == flort-config-view && viewItem == booleanSetting",
+          "group": "inline@1"
+        },
+        {
+          "command": "flort.editSetting",
+          "when": "view == flort-config-view && (viewItem == numberSetting || viewItem == stringSetting)",
+          "group": "inline@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flort",
+      "properties": {
+        "flort.debug": { "type": "boolean", "default": false, "description": "Enable Flort debug output window" },
+        "flort.patterns": { "type": "array", "default": [], "description": "Glob patterns for Flort (included)" },
+        "flort.excludePatterns": { "type": "array", "default": [], "description": "Glob patterns to exclude" },
+        "flort.extensions": { "type": "array", "default": [], "description": "File extensions for Flort (included)" },
+        "flort.excludeExtensions": { "type": "array", "default": [], "description": "File extensions to exclude" },
+        "flort.manualFiles": { "type": "array", "default": [], "description": "Manually included files for Flort" },
+        "flort.profiles": { "type": "object", "default": {}, "description": "Profiles for Flort" },
+        "flort.currentProfile": { "type": "string", "default": "", "description": "Current active Flort profile" },
+        "flort.ignoreDirs": { "type": "array", "default": [], "description": "Directories to exclude" },
+        "flort.all": { "type": "boolean", "default": false, "description": "Include all files (respects exclude filters)" },
+        "flort.hidden": { "type": "boolean", "default": false, "description": "Include hidden files/directories" },
+        "flort.includeBinary": { "type": "boolean", "default": false, "description": "Include binary files (normally excluded)" },
+        "flort.maxDepth": { "type": "number", "default": 0, "description": "Maximum directory traversal depth (0 = unlimited)" },
+        "flort.showConfig": { "type": "boolean", "default": false, "description": "Display configuration at start of output" },
+        "flort.noTree": { "type": "boolean", "default": false, "description": "Skip directory tree generation" },
+        "flort.outline": { "type": "boolean", "default": false, "description": "Generate Python code outline" },
+        "flort.manifest": { "type": "boolean", "default": false, "description": "Create file listing without content" },
+        "flort.noDump": { "type": "boolean", "default": false, "description": "Skip file concatenation" },
+        "flort.archive": { "type": "string", "default": "", "description": "Archive type to create (zip or tar.gz)" },
+        "flort.verbose": { "type": "boolean", "default": false, "description": "Enable detailed logging" }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flort-view-container",
+          "title": "Flort",
+          "icon": "assets/vs-flort.svg"
+        }
+      ]
+    },
+    "views": {
+      "flort-view-container": [
+        {
+          "id": "flort-config-view",
+          "name": "Profile Configuration"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.0",
+    "@types/vscode": "^1.74.0"
+  },
+  "files": [
+    "src",
+    "assets",
+    "package.json",
+    "package-lock.json",
+    "README.md"
+  ]
+}
