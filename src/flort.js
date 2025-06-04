@@ -100,8 +100,37 @@ function activate(context) {
         }
     });
 
+    async function check_flort_availability() {
+        return new Promise((resolve) => {
+            exec('flort --version', (error) => {
+                if (error) {
+                    const selection = vscode.window.showErrorMessage(
+                        'Flort command not found. Please install the Python package: pip install flort',
+                        'View Installation Instructions',
+                        'Open Terminal'
+                    ).then(choice => {
+                        if (choice === 'View Installation Instructions') {
+                            vscode.env.openExternal(vscode.Uri.parse('https://pypi.org/project/flort/'));
+                        } else if (choice === 'Open Terminal') {
+                            vscode.commands.executeCommand('workbench.action.terminal.new');
+                        }
+                    });
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
+
     async function run_flort_command(args) {
         try {
+            // Check if flort is available before proceeding
+            const flort_available = await check_flort_availability();
+            if (!flort_available) {
+                return;
+            }
+
             const config = vscode.workspace.getConfiguration('flort');
             const debug_enabled = config.get('debug', false);
 
@@ -119,15 +148,8 @@ function activate(context) {
                 const active_editor = vscode.window.activeTextEditor;
                 if (active_editor) {
                     selected_items = [active_editor.document.uri];
-                } else if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-                    // Default to the first workspace folder if no files selected and no active editor
-                    selected_items = [vscode.workspace.workspaceFolders[0].uri];
                 }
-            }
-
-            if (selected_items.length === 0) {
-                vscode.window.showErrorMessage('No files, folders, or workspace available for flort');
-                return;
+                // Remove the workspace fallback - let the file/dir logic handle it
             }
 
             // split files / dirs
@@ -150,6 +172,15 @@ function activate(context) {
                 }
             }
 
+
+            if (files.length === 0 && dirs.length === 0 && vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+                const project_base = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                dirs.push(`"${project_base}"`);
+                
+                if (debug_enabled) {
+                    output_channel.appendLine(`No files or directories selected, adding project base: ${project_base}`);
+                }
+            }
             // get current configuration (will use active profile settings)
             const patterns = config.get('patterns', []);
             const extensions = config.get('extensions', []);
@@ -187,7 +218,7 @@ function activate(context) {
             if (config.get('verbose', false)) flags.push('--verbose');
 
             // build full command
-            const files_arg = files.concat(formatted_manual_files).join(' ');
+            const files_arg = files.concat(formatted_manual_files).join(',');
             const dirs_arg = dirs.join(' ');
 
             const parts = [
@@ -225,7 +256,34 @@ function activate(context) {
                     maxBuffer: 1024 * 1024 * 10
                 }, async (error, stdout, stderr) => {
                     if (error) {
-                        vscode.window.showErrorMessage(`Flort failed: ${error.message}`);
+                        // Enhanced error handling for common issues
+                        let error_message = `Flort failed: ${error.message}`;
+                        let show_instructions = false;
+
+                        if (error.message.includes('command not found') || error.message.includes('not recognized')) {
+                            error_message = 'Flort command not found. Please install: pip install flort';
+                            show_instructions = true;
+                        } else if (error.message.includes('python') || error.message.includes('pip')) {
+                            error_message = 'Python/pip not available. Please ensure Python is installed and in PATH.';
+                            show_instructions = true;
+                        }
+
+                        if (show_instructions) {
+                            vscode.window.showErrorMessage(
+                                error_message,
+                                'View Installation Instructions',
+                                'Open Terminal'
+                            ).then(choice => {
+                                if (choice === 'View Installation Instructions') {
+                                    vscode.env.openExternal(vscode.Uri.parse('https://pypi.org/project/flort/'));
+                                } else if (choice === 'Open Terminal') {
+                                    vscode.commands.executeCommand('workbench.action.terminal.new');
+                                }
+                            });
+                        } else {
+                            vscode.window.showErrorMessage(error_message);
+                        }
+
                         if (debug_enabled) {
                             output_channel.appendLine(`ERROR: ${error.message}`);
                             output_channel.show();
@@ -244,7 +302,8 @@ function activate(context) {
                             language: 'text'
                         });
 
-                        // Document opens in background without stealing focus
+                        // Open document and bring it into focus
+                        await vscode.window.showTextDocument(document);
                         resolve();
                     } catch (doc_error) {
                         vscode.window.showErrorMessage(`Failed to open result: ${doc_error.message}`);

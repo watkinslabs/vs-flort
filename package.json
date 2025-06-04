@@ -1,8 +1,8 @@
 {
-  "name": "wl-flort",
-  "displayName": "VS-Flort",
-  "description": "File concatenation tool integration for VSCode - concatenate multiple files into a single output",
-  "version": "0.0.30",
+  "name": "Flort",
+  "displayName": "Flort",
+  "description": "File concatenation tool integration for VSCode - requires 'flort' Python package. Concatenate multiple files into a single output with configurable profiles.",
+  "version": "0.0.34",
   "publisher": "WatkinsLabs",
   "author": {
     "name": "Chris Watkins",
@@ -13,6 +13,28 @@
     "type": "git",
     "url": "https://github.com/watkinslabs/vs-flort"
   },
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/watkinslabs/vs-flort/issues"
+  },
+  "homepage": "https://github.com/watkinslabs/vs-flort#readme",
+  "keywords": [
+    "file concatenation",
+    "flort",
+    "code analysis",
+    "file merger",
+    "development tools",
+    "python",
+    "javascript",
+    "c++",
+    "php",
+    "markdown"
+  ],
+  "icon": "assets/vs-flort.png",
+
+  "categories": [
+    "Other"
+  ],
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -205,6 +227,7 @@
     "assets",
     "package.json",
     "package-lock.json",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ]
 }

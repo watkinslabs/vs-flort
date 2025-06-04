@@ -12,10 +12,25 @@ A VSCode extension for file concatenation using the `flort` command-line tool. C
 
 ## Requirements
 
-- `flort` command-line tool must be installed and available in PATH
-- VSCode ^1.74.0
+Python 3.x with pip
+flort Python package installed globally
+VSCode ^1.74.0
 
 ## Installation
+- Install the flort command-line tool
+- Note flort works on the local system.  
+- The package must be installed on that system, for isntance if you're connected to a remote server
+- If you're using virtual environments it must be the one the IDE is using
+- Otherwise you need to install it in a more global contexst like the user space
+
+```bash
+pip install flort --user
+```
+
+# Verify installation
+flort --version
+
+## Extension Installation
 
 Install from the VSCode marketplace or manually:
 
