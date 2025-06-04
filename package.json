@@ -2,7 +2,7 @@
   "name": "Flort",
   "displayName": "Flort",
   "description": "File concatenation tool integration for VSCode - requires 'flort' Python package. Concatenate multiple files into a single output with configurable profiles.",
-  "version": "0.0.34",
+  "version": "0.0.45",
   "publisher": "WatkinsLabs",
   "author": {
     "name": "Chris Watkins",
@@ -31,7 +31,6 @@
     "markdown"
   ],
   "icon": "assets/vs-flort.png",
-
   "categories": [
     "Other"
   ],
@@ -45,8 +44,16 @@
   ],
   "contributes": {
     "commands": [
-      { "command": "flort.concatenate", "title": "Flort", "category": "Flort" },
+      { "command": "flort.concatenate", "title": "Flort - Active Profile", "category": "Flort" },
       { "command": "flort.concatenateWithProfile", "title": "Flort with Profile", "category": "Flort" },
+      { "command": "flort.runWithCherryPick", "title": "Flort - Cherry Pick", "category": "Flort" },
+      { "command": "flort.runWithAllFiles", "title": "All Files", "category": "Flort" },
+      { "command": "flort.runWithPython", "title": "Python", "category": "Flort" },
+      { "command": "flort.runWithJavaScript", "title": "JavaScript", "category": "Flort" },
+      { "command": "flort.runWithC", "title": "C", "category": "Flort" },
+      { "command": "flort.runWithCPlusPlus", "title": "C++", "category": "Flort" },
+      { "command": "flort.runWithPHP", "title": "PHP", "category": "Flort" },
+      { "command": "flort.runWithMarkdown", "title": "Markdown", "category": "Flort" },
       { "command": "flort.addPattern", "title": "Add Pattern", "icon": "$(add)" },
       { "command": "flort.removePattern", "title": "Remove Pattern", "icon": "$(trash)" },
       { "command": "flort.addExtension", "title": "Add Extension", "icon": "$(add)" },
@@ -66,6 +73,12 @@
       { "command": "flort.refreshProfiles", "title": "Refresh Profiles", "icon": "$(refresh)" },
       { "command": "flort.openWorkspaceSettings", "title": "Open Workspace Settings" }
     ],
+    "submenus": [
+      {
+        "id": "flort.profileSubmenu",
+        "label": "Flort Profile"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
@@ -78,7 +91,26 @@
           "command": "flort.concatenate",
           "group": "flort@1",
           "when": "resourceFilename != ''"
+        },
+        {
+          "command": "flort.runWithCherryPick",
+          "group": "flort@2",
+          "when": "resourceFilename != ''"
+        },
+        {
+          "submenu": "flort.profileSubmenu",
+          "group": "flort@3",
+          "when": "resourceFilename != ''"
         }
+      ],
+      "flort.profileSubmenu": [
+        { "command": "flort.runWithAllFiles", "group": "profiles@1" },
+        { "command": "flort.runWithPython", "group": "profiles@2" },
+        { "command": "flort.runWithJavaScript", "group": "profiles@3" },
+        { "command": "flort.runWithC", "group": "profiles@4" },
+        { "command": "flort.runWithCPlusPlus", "group": "profiles@5" },
+        { "command": "flort.runWithPHP", "group": "profiles@6" },
+        { "command": "flort.runWithMarkdown", "group": "profiles@7" }
       ],
       "view/title": [
         {
@@ -197,7 +229,9 @@
         "flort.manifest": { "type": "boolean", "default": false, "description": "Create file listing without content" },
         "flort.noDump": { "type": "boolean", "default": false, "description": "Skip file concatenation" },
         "flort.archive": { "type": "string", "default": "", "description": "Archive type to create (zip or tar.gz)" },
-        "flort.verbose": { "type": "boolean", "default": false, "description": "Enable detailed logging" }
+        "flort.verbose": { "type": "boolean", "default": false, "description": "Enable detailed logging" },
+        "flort.directoryScanOptional": { "type": "boolean", "default": false, "description": "Make directory scanning optional when no files selected" }
+
       }
     },
     "viewsContainers": {

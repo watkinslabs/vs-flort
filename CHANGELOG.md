@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.35] - 2025-06-04
+### Added
+- Submenu menu for default profiles
+
 ## [0.0.34] - 2025-06-04
 ### Added
  - Renamed Package to reduce ambiguity

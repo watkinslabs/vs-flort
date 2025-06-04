@@ -48,6 +48,7 @@ async function load_profile_settings(profile_name) {
     if (profile.verbose !== undefined) await config.update('verbose', profile.verbose, vscode.ConfigurationTarget.Workspace);
     if (profile.maxDepth !== undefined) await config.update('maxDepth', profile.maxDepth, vscode.ConfigurationTarget.Workspace);
     if (profile.archive !== undefined) await config.update('archive', profile.archive, vscode.ConfigurationTarget.Workspace);
+    if (profile.directoryScanOptional !== undefined) await config.update('directoryScanOptional', profile.directoryScanOptional, vscode.ConfigurationTarget.Workspace);
 }
 
 async function save_current_settings_to_profile(profile_name) {
@@ -73,7 +74,8 @@ async function save_current_settings_to_profile(profile_name) {
         noDump: config.get('noDump', false),
         verbose: config.get('verbose', false),
         maxDepth: config.get('maxDepth', 0),
-        archive: config.get('archive', '')
+        archive: config.get('archive', ''),
+        directoryScanOptional: config.get('directoryScanOptional', false)
     };
 
     profiles[profile_name] = current_settings;
@@ -167,7 +169,6 @@ function register_flort_commands(context, provider) {
                 await config.update('currentProfile', profile_name, vscode.ConfigurationTarget.Workspace);
 
                 setTimeout(() => provider.refresh(), 100);
-                vscode.window.showInformationMessage(`Switched to profile: ${profile_name}`);
             } catch (error) {
                 vscode.window.showErrorMessage(`Failed to switch to profile: ${error.message}`);
             }
@@ -183,7 +184,6 @@ function register_flort_commands(context, provider) {
                     await save_current_settings_to_profile(profile_name);
                     await config.update('currentProfile', profile_name, vscode.ConfigurationTarget.Workspace);
                     setTimeout(() => provider.refresh(), 100);
-                    vscode.window.showInformationMessage(`Created and switched to profile: ${profile_name}`);
                 } else {
                     vscode.window.showWarningMessage(`Profile "${profile_name}" already exists`);
                 }

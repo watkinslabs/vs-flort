@@ -6,6 +6,37 @@ class FlortConfigProvider {
         this.onDidChangeTreeData = this._on_did_change_tree_data.event;
     }
 
+    async create_empty_profile(profile_name) {
+        const config = vscode.workspace.getConfiguration('flort');
+        const profiles = config.get('profiles', {});
+
+        const empty_profile = {
+            patterns: [],
+            extensions: [],
+            manualFiles: [],
+            excludePatterns: [],
+            excludeExtensions: [],
+            ignoreDirs: [],
+            showConfig: false,
+            noTree: false,
+            outline: false,
+            manifest: false,
+            noDump: false,
+            archive: '',
+            debug: false,
+            verbose: false,
+            all: false,
+            hidden: false,
+            includeBinary: false,
+            maxDepth: 0,
+            directoryScanOptional: false
+        };
+
+        profiles[profile_name] = empty_profile;
+        await config.update('profiles', profiles, vscode.ConfigurationTarget.Workspace);
+        this.refresh();
+    }
+
     refresh() {
         this._on_did_change_tree_data.fire();
     }
@@ -36,11 +67,12 @@ class FlortConfigProvider {
                     const label = name === current_profile ? `${name} (active)` : name;
                     const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
                     item.contextValue = 'profile';
+                    item.profileName = name;
                     item.iconPath = new vscode.ThemeIcon(name === current_profile ? 'star-full' : 'account');
                     item.command = {
-                        command: 'flort.openWorkspaceSettings',
-                        title: 'Open Settings',
-                        arguments: []
+                        command: 'flort.setProfile',
+                        title: 'Activate Profile',
+                        arguments: [{ label: name }]
                     };
                     return item;
                 });
@@ -79,6 +111,7 @@ class FlortConfigProvider {
                     this._create_boolean_setting(config, 'all', 'Include All Files'),
                     this._create_boolean_setting(config, 'hidden', 'Include Hidden Files'),
                     this._create_boolean_setting(config, 'includeBinary', 'Include Binary Files'),
+                    this._create_boolean_setting(config, 'directoryScanOptional', 'Directory Scan Optional'),
                     this._create_number_setting(config, 'maxDepth', 'Max Directory Depth')
                 ];
             }

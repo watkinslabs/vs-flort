@@ -1,142 +1,105 @@
-# VS-Flort
+# Flort
 
-A VSCode extension for file concatenation using the `flort` command-line tool. Concatenate multiple files into a single output with configurable profiles and filtering options.
+VSCode extension for preparing your codebase for AI analysis. Concatenates project files into AI-ready format for ChatGPT, Claude, GitHub Copilot, etc.
 
-## Features
+## Why Use This?
 
-- **Profile-based Configuration**: Predefined profiles for Python, JavaScript, C/C++, PHP, Markdown, and "All Files"
-- **Visual Configuration Management**: Tree view interface for managing settings
-- **Flexible File Selection**: Include/exclude patterns, extensions, and manual file selection
-- **Output Control**: Directory tree generation, code outlines, manifests, and archiving
-- **Workspace Integration**: Right-click context menus and command palette integration
+AI assistants need complete context to provide good code analysis, but dumping entire projects wastes tokens, reduces conversation length, and slows responses. Flort helps you be precise - select only relevant files while maintaining clear file structure so AI knows exactly what each piece of code is.
 
-## Requirements
+## Quick Start
 
-Python 3.x with pip
-flort Python package installed globally
-VSCode ^1.74.0
+1. Install: `pip install flort --user`
+2. Install extension from VSCode marketplace
+3. Right-click files/folders → **"Cherry Pick"** (only selected files) or **"Flort - Active Profile"** (uses current profile)
+4. Copy output → paste into AI
+
+## Profiles
+
+| Profile | Use Case |
+|---------|----------|
+| **Cherry Pick** | Only outputs files/folders you specifically select |
+| **Python** | Python projects with code outline |
+| **JavaScript** | Web development, React/Node.js |
+| **C/C++** | Systems programming |
+| **PHP** | Web backend |
+| **Markdown** | Documentation |
+| **All Files** | Complete project overview |
 
 ## Installation
-- Install the flort command-line tool
-- Note flort works on the local system.  
-- The package must be installed on that system, for isntance if you're connected to a remote server
-- If you're using virtual environments it must be the one the IDE is using
-- Otherwise you need to install it in a more global contexst like the user space
 
 ```bash
+# Install flort command-line tool
 pip install flort --user
-```
 
 # Verify installation
 flort --version
 
-## Extension Installation
-
-Install from the VSCode marketplace or manually:
-
-```bash
-# Install the extension
-code --install-extension watkinslabs.vs-flort
+# Install VSCode extension
+code --install-extension watkinslabs.flort
 ```
 
-## Usage
+**Note**: Install flort on the system where your code runs (local machine, remote server, etc.).
 
-### Basic Commands
+---
 
-- **Flort**: Concatenate files using current profile settings
-- **Flort with Profile**: Select a profile before concatenation
+## Technical Details
 
-Access via:
-- Command Palette (`Ctrl+Shift+P`): Search "Flort"
-- Explorer context menu: Right-click files/folders
-- Flort activity bar: Click the concatenate button
+### Configuration
 
-### Configuration Profiles
+Extensions are entered without dots: `py`, `js`, `cpp` (not `.py`, `.js`, `.cpp`)
 
-Seven predefined profiles are available:
-
-| Profile | Extensions | Excludes | Features |
-|---------|------------|----------|----------|
-| Python | `.py` | `__pycache__`, `.pyc` | Code outline enabled |
-| JavaScript | `.js`, `.ts`, `.jsx`, `.tsx` | `node_modules`, `dist` | Standard web dev setup |
-| C | `.c`, `.h` | Build artifacts | Compiled language setup |
-| C++ | `.cpp`, `.hpp`, `.h` | Build artifacts | Extended C++ support |
-| PHP | `.php`, `.phtml` | `vendor`, `cache` | PHP project setup |
-| Markdown | `.md`, `.markdown` | None | Documentation focus |
-| All Files | All | Common temp files | Comprehensive inclusion |
-
-### Profile Management
-
-Use the Flort sidebar to:
-- Switch between profiles
-- Create custom profiles
-- Modify inclusion/exclusion patterns
-- Toggle output options
-- Adjust advanced settings
-
-### Configuration Options
-
-#### File Selection
-- **Patterns**: Glob patterns for file inclusion (e.g., `*.txt`)
-- **Extensions**: File extensions to include
-- **Manual Files**: Explicitly specified file paths
-
-#### Filtering
-- **Exclude Patterns**: Glob patterns to exclude
-- **Exclude Extensions**: File extensions to exclude  
-- **Exclude Directories**: Directory names to skip
-
-#### Output Options
-- **Show Config**: Display configuration in output
-- **Skip Directory Tree**: Omit directory structure
-- **Generate Code Outline**: Create function/class outlines (Python)
-- **File Listing Only**: Create manifest without content
-- **Skip File Content**: Generate tree and manifest only
-- **Archive Type**: Create zip or tar.gz archives
-
-#### Advanced Settings
-- **Debug Output**: Enable detailed logging
-- **Verbose Logging**: Extra execution details
-- **Include All Files**: Override extension filtering
-- **Include Hidden Files**: Process dotfiles
-- **Include Binary Files**: Process non-text files
-- **Max Directory Depth**: Limit traversal depth (0 = unlimited)
-
-## Settings
-
-Configuration is stored in workspace settings under the `flort` namespace:
-
+Settings stored in workspace configuration:
 ```json
 {
   "flort.currentProfile": "Python",
-  "flort.patterns": ["*.test.*"],
   "flort.extensions": ["py"],
-  "flort.excludePatterns": ["__pycache__/*"],
-  "flort.debug": false
+  "flort.excludePatterns": ["__pycache__/*"]
 }
 ```
 
-## Commands
+### Commands
 
 | Command | Description |
 |---------|-------------|
-| `flort.concatenate` | Run flort with current settings |
+| `flort.concatenate` | Run with current profile |
+| `flort.runWithCherryPick` | Select specific files only |
 | `flort.concatenateWithProfile` | Select profile and run |
+| `flort.runWithAllFiles` | All Files profile |
+| `flort.runWithPython` | Python profile |
+| `flort.runWithJavaScript` | JavaScript profile |
+| `flort.runWithC` | C profile |
+| `flort.runWithCPlusPlus` | C++ profile |
+| `flort.runWithPHP` | PHP profile |
+| `flort.runWithMarkdown` | Markdown profile |
 | `flort.setProfile` | Switch active profile |
 | `flort.addProfile` | Create new profile |
 | `flort.addPattern` | Add inclusion pattern |
 | `flort.addExtension` | Add file extension |
 | `flort.addManualFile` | Add specific file |
+| `flort.addExcludePattern` | Add exclude pattern |
+| `flort.addExcludeExtension` | Add exclude extension |
+| `flort.addExcludeDir` | Add exclude directory |
+| `flort.toggleSetting` | Toggle boolean setting |
+| `flort.editSetting` | Edit setting value |
+| `flort.refreshProfiles` | Refresh profile view |
 
-## License
+### Requirements
 
-BSD 3-Clause License
+- Python 3.x with pip
+- VSCode ^1.74.0
 
-## Repository
+### License
 
-https://github.com/watkinslabs/vs-flort
+BSD 3-Clause
 
-## Author
+### Repository
 
-Chris Watkins - chris@watkinslabs.com  
-WatkinsLabs - https://watkinslabs.com
+
+| Component  | Repo |
+|---------|-------------|
+| Extensiopn | https://github.com/watkinslabs/vs-flort |
+| CLI Tool | https://github.com/watkinslabs/flort |
+
+### Author
+
+Chris Watkins - chris@watkinslabs.com
