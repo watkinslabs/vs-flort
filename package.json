@@ -2,7 +2,7 @@
   "name": "Flort",
   "displayName": "Flort",
   "description": "File concatenation tool integration for VSCode - requires 'flort' Python package. Concatenate multiple files into a single output with configurable profiles.",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "publisher": "WatkinsLabs",
   "author": {
     "name": "Chris Watkins",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/watkinslabs/vs-flort"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/watkinslabs/vs-flort/issues"
   },
